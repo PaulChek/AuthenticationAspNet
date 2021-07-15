@@ -23,7 +23,7 @@ namespace EmailVerification {
         }
 
         public void ConfigureServices(IServiceCollection services) {
-
+            #region Login decration with email virification!
             services.AddDbContext<AuthDbContext>(o => o.UseSqlServer(Configuration.GetConnectionString("Sql")));
 
             services.AddIdentity<IdentityUser, IdentityRole>(c => c.SignIn.RequireConfirmedEmail = true).AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders(); 
@@ -31,11 +31,17 @@ namespace EmailVerification {
             services.ConfigureApplicationCookie(o => {
                 o.LoginPath = "/login";
                 o.Cookie.Name = "AuthT";
-            }
-            );
+            });
+
             services.AddMailKit(c=> {
                 var options = Configuration.GetSection("Email").Get<MailKitOptions>();
                 c.UseMailKit(options);
+            });
+
+            #endregion
+
+            services.AddAuthorization(c => { 
+               c.
             });
 
             services.AddControllersWithViews();
