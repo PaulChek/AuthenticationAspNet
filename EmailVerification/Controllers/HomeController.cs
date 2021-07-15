@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 
 namespace EmailVerification.Controllers {
     public class HomeController : Controller {
+        private readonly IAuthorizationService _authorizationService;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly IEmailService _emailService;
 
-        public HomeController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailService emailService) {
+        public HomeController(IAuthorizationService authorizationService, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IEmailService emailService) {
+            _authorizationService = authorizationService;
             _userManager = userManager;
             _signInManager = signInManager;
             _emailService = emailService;
@@ -28,7 +30,7 @@ namespace EmailVerification.Controllers {
         public IActionResult Secret() {
             return View();
         }
-
+        [AllowAnonymous]
         [Route("[action]")]
         public IActionResult Login() {
             return View();
@@ -47,6 +49,7 @@ namespace EmailVerification.Controllers {
 
         [Route("[action]")]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> LoginAsync(string username, string password) {
             var user = await _userManager.FindByNameAsync(username);
 
@@ -60,13 +63,13 @@ namespace EmailVerification.Controllers {
         [HttpPost]
         public async Task<IActionResult> RegAsync(string username, string password) {
             var user = new IdentityUser { UserName = username };
-          var res =  await _userManager.CreateAsync(user, password);
+            var res = await _userManager.CreateAsync(user, password);
             if (res.Succeeded) {
 
                 var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-               
-                var link = Url.Action(nameof(VerifyEmail), "Home", new { userId = user.Id , token = emailToken }, Request.Scheme+"", Request.Host+"") ;
-                
+
+                var link = Url.Action(nameof(VerifyEmail), "Home", new { userId = user.Id, token = emailToken }, Request.Scheme + "", Request.Host + "");
+
                 _emailService.Send("paulchek777@gmail.com", "auth", link, false, null);
 
                 return Ok("Check your email and verify!");
@@ -81,6 +84,14 @@ namespace EmailVerification.Controllers {
 
             await _userManager.ConfirmEmailAsync(user, token);
             return View();
+        }
+        [Route("[action]")]
+        public async Task<IActionResult> DoSomething() {
+            Console.WriteLine("Do first part without login");
+          var res =  await _authorizationService.AuthorizeAsync(HttpContext.User, "MyPolicy");
+            if (!res.Succeeded) return Ok( "FuckOff");
+            Console.WriteLine("after login");
+            return Ok($"Yep {HttpContext.User.Identity.Name} MyPolicy");
         }
     }
 }
