@@ -45,7 +45,7 @@ namespace EmailVerification {
             #endregion
             //Policy
             services.AddAuthorization(c => {
-                c.AddPolicy("sgsfg", policy => {
+                c.AddPolicy("MyPolicy", policy => {
                     policy.RequireClaim(ClaimTypes.Name);
                 });
             });
