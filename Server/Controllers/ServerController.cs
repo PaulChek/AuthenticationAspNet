@@ -19,8 +19,9 @@ namespace Server.Controllers {
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(new { Amount = 108, Message = "Hello" });
+            return Ok(new { Message = "Hello" });
         } 
+
         [Authorize]
         [HttpGet("secret")]
         public IActionResult GetSecret() {
