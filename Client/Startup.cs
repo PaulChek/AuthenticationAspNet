@@ -9,19 +9,19 @@ namespace Client {
         public void ConfigureServices(IServiceCollection services) {
             services.AddAuthentication(config => {
                 // We check the cookie to confirm that we are authenticated
-                config.DefaultAuthenticateScheme = "ClientCookie";
+                config.DefaultAuthenticateScheme = "Cookie";
                 // When we sign in we will deal out a cookie
-                config.DefaultSignInScheme = "ClientCookie";
+                config.DefaultSignInScheme = "Cookie";
                 // use this to check if we are allowed to do something.
                 config.DefaultChallengeScheme = "OurServer";
             })
-                .AddCookie("ClientCookie")
+                .AddCookie("Cookie")
                 .AddOAuth("OurServer", config => {
                     config.ClientId = "client_id";
-                    config.ClientSecret = "client_secret";
-                    config.CallbackPath = "/oauth/callback";
+                    config.ClientSecret = "client_secret_sdgsdfagdsfgdfsgdfsgdsfgsddvsdvscvxzccxzccsacx";
+                    config.CallbackPath = "/oauth_callback";
+                    config.TokenEndpoint = "https://localhost:5002/oauth"; //run Token method
                     config.AuthorizationEndpoint = "https://localhost:5002/oauth/authorize";
-                    config.TokenEndpoint = "https://localhost:5002/oauth/token";
                     config.SaveTokens = true;
                 });
 
@@ -38,7 +38,7 @@ namespace Client {
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
             });
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Client.Controllers {
     [Route("[controller]")]
     [ApiController]
-    public class ClientController : ControllerBase {
+    public class ClientController : Controller {
 
         [HttpGet]
         public IActionResult Get() {
@@ -15,7 +15,7 @@ namespace Client.Controllers {
         [Authorize]
         [HttpGet("secret")]
         public IActionResult GetSecret() {
-            return Ok(new { res = "Secret Very" });
+            return Ok( new { super_secret_client = 12134343543});
         }
     }
 }

@@ -38,8 +38,7 @@ namespace Server.Controllers {
            
             return Redirect($"{redirectUri}{query}");
         }
-        
-        [HttpGet("token")]
+         //                        had problem with tis     //!!!!!!!!!!!!!!!!!!!!!
         public object Token(
             string grant_type, // flow of access_token request
             string code, // confirmation of the authentication process
@@ -63,19 +62,18 @@ namespace Server.Controllers {
                 signCredentials
                 );
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            Console.WriteLine("token get");
 
             var respObj = new {
                 access_token = tokenString,
                 token_type = "Bearer",
-                raw_claim = "oauthTutorial",
-                refresh_token = "RefreshTokenSampleValueSomething77"
+                raw_claim = "oauthTutorial"
             };
 
             //var res = JsonSerializer.Serialize(respObj);
             //var bytes = Encoding.ASCII.GetBytes(res);
             //await Response.Body.WriteAsync(bytes, 0, bytes.Length);
 
+            Console.WriteLine("token get" + respObj.access_token);
 
             return respObj;
         }
